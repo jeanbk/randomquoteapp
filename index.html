@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Random Quote App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css"
+      integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX"
+      crossorigin="anonymous"
+    />
+  </head>
+  <style>
+    body {
+      font-family: courier, monospace;
+      font-size: 30px;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <div
+        v-bind:style="{ 'background-color': currentBackgroundColor }"
+        class="container"
+      >
+        <div class="row">
+          <div class="col-sm-6 offset-sm-3">
+            <div class="card mt-5">
+              <div class="card-body bg-info text-black">
+                <div class="card-text font-weight-bolder">
+                  "{{ quoteText }}" ~ {{ quoteAuthor }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 offset-sm-3 d-flex justify-content-center">
+            <button
+              @click="fetchQuotes"
+              class="btn btn-dark mt-2 border border-light"
+            >
+              New Quote
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      var url = 'https://type.fit/api/quotes';
+
+      var colors = [
+        'blue',
+        'indigo',
+        'purple',
+        'pink',
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'teal',
+        'cyan',
+        'white',
+        'gray',
+        'gray-dark',
+      ];
+
+      // creation of a Vue instance
+      var vm = new Vue({
+        el: '#app',
+        data: {
+          quoteText: '', //initiliaze to empty string
+          quoteAuthor: '',
+          colors,
+          currentBackgroundColor: colors[0],
+        },
+
+        // created: function () {
+        //   this.fetchQuotes();
+        // },
+
+        // method to randomly choose a quote from our API quote and display it in the DOM
+        methods: {
+          fetchQuotes: function () {
+            axios.get(url).then(function (res) {
+              var quotes = res.data;
+
+              const num = Math.floor(Math.random() * quotes.length);
+              vm.quoteText = quotes[num].text; // we hardcode the first quote and author at least
+              vm.quoteAuthor = quotes[num].author;
+
+              // to change the background color
+              const color = Math.floor(Math.random() * colors.length);
+              vm.currentBackgroundColor = colors[color];
+            });
+          },
+
+          // newQuote: function () {
+          //   vm.quoteText = quotes[10].text;
+          //   vm.quoteAuthor = quotes[10].author;
+          // },
+        },
+      });
+
+      vm.fetchQuotes();
+    </script>
+  </body>
+</html>
